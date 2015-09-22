@@ -24,7 +24,7 @@ def char_freq_count(cand):
 # Score based on ordering of common letters. Lower is more "normative" English.
 # This scoring mechanism *seriously* exaggerates unusual chars.
 # Which is good because failed decryption probably has glaring incorrectnesses
-def score_freq_order(cand):
+def score_freq(cand):
     points = defaultdict(lambda: 100)
     for i in range(len(expected_order)):
         points[expected_order[i]] = i
