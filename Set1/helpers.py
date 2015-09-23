@@ -62,3 +62,24 @@ def hamming_weight(some_string):
 def hamming(str_1, str_2):
     x = xor_buf(str_1,str_2)
     return hamming_weight(x)
+
+# find repeated key size by statistical analysis
+def find_r_keysizes(ctext,search_range):
+    scores = collections.defaultdict(float)
+    for keylen in search_range:
+        sample_1 = ctext[:4*keylen]
+        sample_2 = ctext[4*keylen:8 * keylen]
+        scores[keylen] = float(hamming(sample_1,sample_2))/keylen
+    return sorted(scores.items(), key=lambda x: x[1])
+
+def crack_vigenere(buf,key_size_range):
+    # get candidate repeated key sizes, ordered by probability
+    keysizes = find_r_keysizes(buf, key_size_range)
+    key = ''
+    for (size,_) in keysizes:
+        for i in range(size):
+            stripe = stripe_buf(buf,i,size)
+            key = key + solve_xorc(stripe)
+        # easily achievable score for almost any plain text
+        if float(score_freq(lxor_buf(buf,key)))/len(buf) < 20:
+            return (lxor_buf(buf,key))
