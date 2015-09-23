@@ -32,3 +32,33 @@ def score_freq(cand):
     for c in cand.lower():
         score += points[c]
     return score
+
+# Solve most probable xor char for a single char xor
+def solve_xorc(buff):
+    score = float('inf')
+    best = ''
+    for i in range(0,256):
+        x = score_freq(lxor_buf(buff,chr(i)))
+        if x < score:
+            score = x
+            best = chr(i)
+    return best
+
+# Return a stripe of a buffer's ith characters mod q
+def stripe_buf(buff,i,q):
+    return "".join([c for idx, c in enumerate(buff) if idx%q==i])
+
+# My bitwise maths is probably inelegant here. For shame
+def hamming_weight(some_string):
+    weight = 0
+    i = 0
+    for c in some_string:
+        i = ord(c)
+        while i > 0:
+            weight += (i & 0b1)
+            i = i >> 1
+    return weight
+
+def hamming(str_1, str_2):
+    x = xor_buf(str_1,str_2)
+    return hamming_weight(x)
